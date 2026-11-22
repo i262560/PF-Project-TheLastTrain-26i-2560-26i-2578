@@ -44,6 +44,25 @@ bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, in
 	   if (!file) {
 		return false;
 	   }
+	   char line[MAX_LINE_LEN];
+        while (file.getline(line, MAX_LINE_LEN)) {
+			trimWhitespace(line);
+			if (line[0]=='\0') {
+				continue;
+			}
+			int colon = -1;
+			for (int k=0;line[k] !='\0';k++) {
+				if (line[k] == ':') {
+                colon = k;
+				break;
+				}
+			}
+				if (colon == -1) {
+             continue;
+      }
+      
+			}
+		
 	   file.close();
 	   return true;
  }
