@@ -1,5 +1,7 @@
 #include "level.h"
 #include "util.h"
+#include <fstream>
+using namespace std;
 
 // Modular implementation using primitive arrays for map parsing and verification
 const char* getEntityName(char entitySymbol) {
@@ -24,3 +26,25 @@ const char* getEntityName(char entitySymbol) {
     }
 
 }
+bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, int& energy, int& time, int& score, char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount, bool objectives[NUM_OBJECTIVES], int& emergencyTripsLeft) {
+    playerFloor=1;
+	playerRoom=1;
+	energy=INITIAL_ENERGY;
+	time=INITIAL_TIME;
+	score=INITIAL_SCORE;
+	inventoryCount= 0;
+    emergencyTripsLeft= 0;
+	  for (int i=0;i<NUM_OBJECTIVES;i++) {
+		objectives[i]= false;
+	  }
+	  for (int i = 0; i < MAX_INVENTORY_CAPACITY; i++) {
+    inventory[i] = ENT_NONE;
+}
+	  ifstream file(filename);
+	   if (!file) {
+		return false;
+	   }
+	   file.close();
+	   return true;
+ }
+ 
