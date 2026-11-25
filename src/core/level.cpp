@@ -112,4 +112,16 @@ bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, in
 	   file.close();
 	   return true;
  }
- 
+ bool validateStartingRoom(int startFloor, int startRoom, const char horizontalConn[NUM_FLOORS][ROOMS_PER_FLOOR - 1]){
+  if (startFloor<1 || startFloor>NUM_FLOORS) {
+	   return false;
+  }
+  int f = startFloor-1;
+  bool leftBlocked = (startRoom==1 || horizontalConn[f][startRoom-2] == CONN_SOLID_WALL);
+   bool rightBlocked = (startRoom == ROOMS_PER_FLOOR || horizontalConn[f][startRoom-1] == CONN_SOLID_WALL);
+   if (leftBlocked==false && rightBlocked==false) {
+    return false;
+}
+return true;
+
+  }
