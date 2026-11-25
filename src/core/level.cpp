@@ -24,8 +24,19 @@ const char* getEntityName(char entitySymbol) {
 	    case ENT_OBSERVATION_TOKEN: return "Observation Token";
          default:	return "Unknown";
     }
-
 }
+  int textToInt(const char* text){
+	int result=0;
+	int i=0;
+	while (text[i] >= '0' && text[i] <= '9') {
+    result = result * 10 + (text[i] - '0');
+    i++;
+	}
+	return result;
+
+ }
+
+
 bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, int& energy, int& time, int& score, char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount, bool objectives[NUM_OBJECTIVES], int& emergencyTripsLeft) {
     playerFloor=1;
 	playerRoom=1;
@@ -60,6 +71,41 @@ bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, in
 				if (colon == -1) {
              continue;
       }
+	      line[colon] = '\0';
+       char* name = line;
+       char* value = line + colon + 1;
+	   trimWhitespace(name);
+       trimWhitespace(value);
+       if (stringEquals(name, "INITIAL_ENERGY")) {
+    energy = textToInt(value);
+   }
+   if (stringEquals(name, "INITIAL_TIME")) {
+    time = textToInt(value);
+  }
+  if (stringEquals(name, "INITIAL_SCORE")) {
+    score = textToInt(value);
+   }
+   if (stringEquals(name, "PASSENGER_RESCUED")) {
+    objectives[OBJ_PASSENGER_RESCUED] = stringEquals(value, "YES");
+ }
+  if (stringEquals(name, "CAT_RESCUED")) {
+    objectives[OBJ_PASSENGER_RESCUED] = stringEquals(value, "YES");
+ }
+  if (stringEquals(name, "CABINET_UNLOCKED")) {
+    objectives[OBJ_CABINET_UNLOCKED] = stringEquals(value, "YES");
+ }
+  if (stringEquals(name, "TRAIN_KEY_UNLOCKED")) {
+    objectives[OBJ_TRAIN_KEY] = stringEquals(value, "YES");
+ }
+  if (stringEquals(name, "FUSE_INSTALLED")) {
+    objectives[OBJ_FUSE_INSTALLED] = stringEquals(value, "YES");
+ }
+    if (stringEquals(name, "LIFT_PASS_COLLECTED")) {
+    objectives[OBJ_LIFT_PASS] = stringEquals(value, "YES");
+ }
+   if (stringEquals(name, "TRAIN_PREPARED")) {
+    objectives[OBJ_TRAIN_PREPARED] = stringEquals(value, "YES");
+ }
       
 			}
 		
