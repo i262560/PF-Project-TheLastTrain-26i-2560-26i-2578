@@ -22,6 +22,25 @@ bool saveGameStateToFile(const char* filename,
     file << score << "\n";
     file << inventoryCount << "\n";
     file << emergencyTripsLeft << "\n";
+     for (int j = 0; j < MAX_INVENTORY_CAPACITY; j++) {
+    file << inventory[j] << "\n";
+   }
+   for (int j = 0; j < NUM_OBJECTIVES; j++) {
+    file << objectives[j] << "\n";
+   }
+    for (int f = 0; f < NUM_FLOORS; f++) {
+    for (int r = 0; r < ROOMS_PER_FLOOR; r++) {
+        file << entityCounts[f][r] << "\n";
+    }
+   }
+   for (int f = 0; f < NUM_FLOORS; f++) {
+    for (int r = 0; r < ROOMS_PER_FLOOR; r++) {
+        for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++) {
+            file << roomEntities[f][r][k] << "\n";
+        }
+
+    }
+  }
     file.close();
    return true;
     }
