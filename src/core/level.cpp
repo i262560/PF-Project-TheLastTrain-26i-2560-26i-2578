@@ -148,6 +148,26 @@ return true;
   char line[MAX_LINE_LEN];
   char itemLine[MAX_LINE_LEN];
     while (file.getline(line, MAX_LINE_LEN)) {
+  bool hasPipe = false;
+    for (int k = 0; line[k] != '\0'; k++) {
+    if (line[k] == '|') {
+        hasPipe = true;
+    }
+}
+if (!hasPipe) {
+    continue;
+}
+ int labelPos = -1;
+for (int k = 0; line[k] != '\0'; k++) {
+    if (line[k] == 'F' && line[k+1] >= '1' && line[k+1] <= '5' && line[k+2] == '-' && line[k+3] == 'R' && line[k+4] >= '1' && line[k+4] <= '4') {
+        labelPos = k;
+        break;
+    }
+}
+if (labelPos == -1) {
+    continue;
+}
+  int f = line[labelPos + 1] - '0' - 1;
 
 }
 file.close();
