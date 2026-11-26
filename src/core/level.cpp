@@ -125,3 +125,35 @@ bool loadInitialState(const char* filename,int& playerFloor, int& playerRoom, in
 return true;
 
   }
+  bool loadBuildingMap(const char* filename,
+	         char horizontalConn[NUM_FLOORS][ROOMS_PER_FLOOR - 1], 
+	          char roomEntities[NUM_FLOORS][ROOMS_PER_FLOOR][MAX_ENTITIES_PER_ROOM], int entityCounts[NUM_FLOORS][ROOMS_PER_FLOOR]){
+   for (int f = 0;f<NUM_FLOORS; f++ ) {
+     for (int r = 0;r<ROOMS_PER_FLOOR-1 ; r++) {
+		  horizontalConn[f][r] = CONN_NONE;
+
+	 }
+	  for (int r=0; r<ROOMS_PER_FLOOR; r++) {
+		entityCounts[f][r] = 0;
+		 for (int j = 0; j < MAX_ENTITIES_PER_ROOM; j++) {
+            roomEntities[f][r][j] = ENT_NONE;
+        }
+    }
+}
+  ifstream file(filename);
+  if (!file) {
+    return false;
+}
+  int floorsLoaded = 0;
+  char line[MAX_LINE_LEN];
+  char itemLine[MAX_LINE_LEN];
+    while (file.getline(line, MAX_LINE_LEN)) {
+
+}
+file.close();
+if (floorsLoaded != NUM_FLOORS) {
+    return false;
+}
+return true;
+
+   }
