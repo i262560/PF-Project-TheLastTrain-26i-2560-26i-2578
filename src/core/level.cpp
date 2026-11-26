@@ -168,7 +168,18 @@ if (labelPos == -1) {
     continue;
 }
   int f = line[labelPos + 1] - '0' - 1;
-
+   for (int k = 0; line[k] != '\0'; k++) {
+    if (line[k] == 'F' && line[k+1] >= '1' && line[k+1] <= '5' && line[k+2] == '-' && line[k+3] == 'R' && line[k+4] >= '1' && line[k+4] <= '4') {
+        int room = line[k+4] - '0' - 1;
+  if (room > 0 && k >= 2) {
+    char c = line[k-2];
+    if (c == 'D' || c == 'W' || c == 'L' || c == '#') {
+        horizontalConn[f][room - 1] = c;
+    }
+}
+	}
+}
+floorsLoaded++;
 }
 file.close();
 if (floorsLoaded != NUM_FLOORS) {
