@@ -168,9 +168,11 @@ if (labelPos == -1) {
     continue;
 }
   int f = line[labelPos + 1] - '0' - 1;
+  int starts[ROOMS_PER_FLOOR] = {0, 0, 0, 0};
    for (int k = 0; line[k] != '\0'; k++) {
     if (line[k] == 'F' && line[k+1] >= '1' && line[k+1] <= '5' && line[k+2] == '-' && line[k+3] == 'R' && line[k+4] >= '1' && line[k+4] <= '4') {
         int room = line[k+4] - '0' - 1;
+		starts[room] = k;
   if (room > 0 && k >= 2) {
     char c = line[k-2];
     if (c == 'D' || c == 'W' || c == 'L' || c == '#') {
@@ -178,6 +180,28 @@ if (labelPos == -1) {
     }
 }
 	}
+}
+  if (!file.getline(itemLine, MAX_LINE_LEN)) {
+    break;
+}
+ for (int c = 0; itemLine[c] != '\0'; c++) {
+    char s = itemLine[c];
+    if (s == ' ' || s == '|' || s == '\r') {
+        continue;
+    }
+	if (stringEquals(getEntityName(s), "Unknown")) {
+    continue;
+}
+    int r = 0;
+    for (int q = 0; q < ROOMS_PER_FLOOR; q++) {
+        if (c >= starts[q] - 2) {
+            r = q;
+        }
+    }
+    if (entityCounts[f][r] < MAX_ENTITIES_PER_ROOM) {
+        roomEntities[f][r][entityCounts[f][r]] = s;
+        entityCounts[f][r]++;
+    }
 }
 floorsLoaded++;
 }
