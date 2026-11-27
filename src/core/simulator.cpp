@@ -41,7 +41,7 @@ playerRoom = startRoom;
  bool victory = false;
  while (isrunning) {
 renderDashboard(playerFloor, playerRoom, energy, time, score, inventory, inventoryCount, emergencyTripsLeft);
-renderRoomDetails(playerFloor, playerRoom, roomEntities, entityCounts[playerFloor - 1][playerRoom - 1]); 
+renderRoomDetails(playerFloor-1, playerRoom-1, roomEntities, entityCounts[playerFloor - 1][playerRoom - 1]); 
 cout << "Commands: M I C U K S L Q\n> ";
 char command;
 cin >> command;
@@ -50,14 +50,57 @@ if (!cin) {
 }
 if (command == 'Q' || command == 'q') {
     isrunning = false;
-} else {
+}  else if (command == 'I' || command == 'i') {
+    handleInspectCommand(playerFloor, playerRoom, energy, time, roomEntities,
+                         entityCounts[playerFloor - 1][playerRoom - 1], objectives, score);
+    }
+
+else {
     cout << "Unknown command.\n";
 }
 }
+}  
+ bool handleInspectCommand(int currentFloor, int currentRoom,
+                          int& energy, int& time,
+                          const char roomEntities[NUM_FLOORS][ROOMS_PER_FLOOR][MAX_ENTITIES_PER_ROOM],
+                          int entityCount,
+                          bool objectives[NUM_OBJECTIVES], int& score){
+ applyResourceDelta(energy, time, COST_INSPECT_ENERGY, COST_INSPECT_TIME);
+
+int f = currentFloor - 1;
+int r = currentRoom - 1;
+bool newfound = false;
+for (int e = 0; e < entityCount; e++) {
+    char s = roomEntities[f][r][e];
+    if (s == ENT_CLUE_4 && !objectives[OBJ_CLUE_4]) {
+    objectives[OBJ_CLUE_4] = true;
+    applyScoreDelta(score, SCORE_CLUE_FOUND);
+    cout << "You found clue digit 4!"<<endl;
+    newfound = true;
+    }
+     if (s == ENT_CLUE_2 && !objectives[OBJ_CLUE_2]) {
+    objectives[OBJ_CLUE_2] = true;
+    applyScoreDelta(score, SCORE_CLUE_FOUND);
+    cout << "You found clue digit 42"<<endl;
+    newfound = true;
+     }
+     if (s == ENT_CLUE_7 && !objectives[OBJ_CLUE_7]) {
+    objectives[OBJ_CLUE_7] = true;
+    applyScoreDelta(score, SCORE_CLUE_FOUND);
+    cout << "You found clue digit 7!"<<endl;
+    newfound = true;
+}
+}
+if (!newfound) {
+    cout << "You find nothing new."<<endl;
+}
+return true;
+}
 
 
 
 
-}      
+
+
                 
 
