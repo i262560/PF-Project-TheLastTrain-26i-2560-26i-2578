@@ -107,14 +107,112 @@ if (inventoryCount < 0 || inventoryCount > MAX_INVENTORY_CAPACITY) {
         }
     }
 }
-
-
-    file.close();
+   file.close();
    return true;
+ }
+   void writeGameSummaryReport(const char* filename,
+                            int score, int remainingEnergy, int remainingTime,
+                            const bool objectives[NUM_OBJECTIVES], bool victory) {
+    ofstream file(filename);
+   if (!file) {
+    return;
+  }    
+      file << "THE LAST TRAIN - GAME SUMMARY\n";
+  if (victory) {
+    file << "Result: VICTORY"<<endl;
+  } else {
+    file << "Result: DEFEAT"<<endl;
+  }
+ file << "Final Score: " << score <<endl;
+ file << "Remaining Energy: " << remainingEnergy <<endl;
+ file << "Remaining Time: " << remainingTime <<endl;
+ file << "Objectives:"<<endl; 
 
+  file << "Master Key Collected: ";
+if (objectives[OBJ_MASTER_KEY]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+} 
 
-        
-                           }
+ file << "Clue Digit 4 found: ";
+if (objectives[OBJ_CLUE_4]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Clue Digit 2 found: ";
+if (objectives[OBJ_CLUE_2]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Clue Digit 7 found:";
+if (objectives[OBJ_CLUE_7]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Cabinet Unlocked: ";
+if (objectives[OBJ_CABINET_UNLOCKED]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Train Key Acquired: ";
+if (objectives[OBJ_TRAIN_KEY]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Fuse Installed: ";
+if (objectives[OBJ_FUSE_INSTALLED]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Lift Pass Collected: ";
+if (objectives[OBJ_LIFT_PASS]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}  
+
+ file << "Passenger rescued: ";
+if (objectives[OBJ_PASSENGER_RESCUED]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}  
+                  
+ file << "Cat sescued: ";
+if (objectives[OBJ_CAT_SECURED]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                  
+ file << "Train prepared and loaded: ";
+if (objectives[OBJ_TRAIN_PREPARED]) {
+    file << "Yes"<<endl;
+} else {
+    file << "No"<<endl;
+}    
+                   
+                  
+                                            
+                           
+                           
+                           
+                           
+                           
+                            }
 
 
 
