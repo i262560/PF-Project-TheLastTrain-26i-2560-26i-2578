@@ -79,6 +79,7 @@ for (int f = 0; f < NUM_FLOORS; f++) {
         file >> entityCounts[f][r];
     }
   }
+    file.getline(oneline, MAX_LINE_LEN);
   for (int f = 0; f < NUM_FLOORS; f++) {
     for (int r = 0; r < ROOMS_PER_FLOOR; r++) {
         for (int k = 0; k < MAX_ENTITIES_PER_ROOM; k++) {
@@ -87,6 +88,25 @@ for (int f = 0; f < NUM_FLOORS; f++) {
         }
     }
   }
+   if (!file) {
+    return false;
+ }
+   if (playerFloor < 1 || playerFloor > NUM_FLOORS) {
+    return false;
+}
+if (playerRoom < 1 || playerRoom > ROOMS_PER_FLOOR) {
+    return false;
+}
+if (inventoryCount < 0 || inventoryCount > MAX_INVENTORY_CAPACITY) {
+    return false;
+}
+ for (int f = 0; f < NUM_FLOORS; f++) {
+    for (int r = 0; r < ROOMS_PER_FLOOR; r++) {
+        if (entityCounts[f][r] < 0 || entityCounts[f][r] > MAX_ENTITIES_PER_ROOM) {
+            return false;
+        }
+    }
+}
 
 
     file.close();
