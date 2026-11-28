@@ -54,12 +54,21 @@ if (command == 'Q' || command == 'q') {
     handleInspectCommand(playerFloor, playerRoom, energy, time, roomEntities,
                          entityCounts[playerFloor - 1][playerRoom - 1], objectives, score);
     }
+  else if (command == 'C' || command == 'c') {
+    char symbol;
+    cout << "Item symbol to collect: ";
+    cin >> symbol;
+    handleCollectCommand(symbol, playerFloor, playerRoom, energy, time, score, roomEntities,
+                         entityCounts[playerFloor - 1][playerRoom - 1],
+                         inventory, inventoryCount, objectives);
+}
 
 else {
     cout << "Unknown command.\n";
 }
 }
-}  
+                   }
+  
  bool handleInspectCommand(int currentFloor, int currentRoom,
                           int& energy, int& time,
                           const char roomEntities[NUM_FLOORS][ROOMS_PER_FLOOR][MAX_ENTITIES_PER_ROOM],
@@ -96,6 +105,29 @@ if (!newfound) {
 }
 return true;
 }
+bool handleCollectCommand(char itemSymbol, int currentFloor, int currentRoom,
+                          int& energy, int& time, int& score,
+                          char roomEntities[NUM_FLOORS][ROOMS_PER_FLOOR][MAX_ENTITIES_PER_ROOM],
+                          int& entityCount,
+                          char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount,
+                          bool objectives[NUM_OBJECTIVES]){
+int f = currentFloor - 1;
+int r = currentRoom - 1;
+int pos = -1;
+for (int e = 0; e < entityCount; e++) {
+    if (roomEntities[f][r][e] == itemSymbol) {
+        pos = e;
+        break;
+    }
+}
+if (pos == -1) {
+    cout << "That item is not here."<<endl;
+    return false;
+}
+cout << "Found it!"<<endl;
+return true;
+ }
+
 
 
 
