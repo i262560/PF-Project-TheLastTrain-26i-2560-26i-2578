@@ -38,7 +38,6 @@ if (!valid) {
   playerFloor = startFloor;
 playerRoom = startRoom;
  bool isrunning = true;
- bool victory = false;
  while (isrunning) {
 renderDashboard(playerFloor, playerRoom, energy, time, score, inventory, inventoryCount, emergencyTripsLeft);
 renderRoomDetails(playerFloor-1, playerRoom-1, roomEntities, entityCounts[playerFloor - 1][playerRoom - 1]); 
@@ -64,13 +63,86 @@ if (command == 'Q' || command == 'q') {
     if (picked && symbol == ENT_EMERGENCY_CARD) {
         emergencyTripsLeft = 3;
     }
+   
+} 
+else if (command == 'S' || command == 's') {
+    bool saved = saveGameStateToFile("out/savegame.txt", playerFloor, playerRoom,
+                                  energy, time, score,
+                                  inventory, inventoryCount,
+                                  objectives, emergencyTripsLeft,
+                                  roomEntities, entityCounts);
+    if (saved) {
+        cout << "Game saved." << endl;
+    } else {
+        cout << "Could not save the game." << endl;
+    }
 }
-
+ else if (command == 'L' || command == 'l') {
+    bool load = loadGameStateFromFile("out/savegame.txt", playerFloor, playerRoom,
+                                    energy, time, score,
+                                    inventory, inventoryCount,
+                                    objectives, emergencyTripsLeft,
+                                    roomEntities, entityCounts);
+    if (load) {
+        cout << "Game loaded." << endl;
+    } else {
+        cout << "No valid save file found." << endl;
+    }
+}
+else if (command == 'B' || command == 'b') {
+    renderAsciiBuilding(playerFloor, playerRoom);
+}
+else if (command == 'O' || command == 'o') {
+    renderObjectivesChecklist(objectives);
+}
+else if (command == 'M' || command == 'm') {
+    int tf, tr;
+    cout << "Target floor (1-5): ";
+    cin >> tf;
+    cout << "Target room (1-4): ";
+    cin >> tr;
+    if (!cin) {
+        cin.clear();
+        cin.ignore(1000, '\n');
+        cout << "Please enter numbers only." << endl;
+    } else {
+        bool lift2Operational = objectives[OBJ_FUSE_INSTALLED] && objectives[OBJ_LIFT_PASS];
+        handleMoveCommand(tf, tr, playerFloor, playerRoom, energy, time,
+                          horizontalConn, inventory, inventoryCount,
+                          emergencyTripsLeft, lift2Operational);
+    }
+}
+else if (command == 'U' || command == 'u') {
+    char symbol;
+    cout << "Item symbol to use: ";
+    cin >> symbol;
+    handleUseCommand(symbol, playerFloor, playerRoom, energy, time, score,
+                     inventory, inventoryCount, objectives);
+}
+else if (command == 'K' || command == 'k') {
+    char code[10];
+    cout << "Enter cabinet code: ";
+    cin.width(10);
+    cin >> code;
+    handleUnlockCabinetCommand(code, playerFloor, playerRoom, objectives, score,
+                               roomEntities,
+                               entityCounts[playerFloor - 1][playerRoom - 1]);
+}
 
 else {
     cout << "Unknown command.\n";
 }
+if (checkEndConditions(energy, time, objectives)) {
+    isrunning = false;
+}
                    }
+    bool win = objectives[OBJ_MISSION_WON];
+if (win) {
+    cout << "MISSION COMPLETE! You boarded the train." << endl;
+} else if (energy <= 0 || time <= 0) {
+    cout << "MISSION FAILED: you ran out of energy or time." << endl;
+}
+writeGameSummaryReport("out/game_summary.txt", score, energy, time, objectives, win);               
 }
 
   
@@ -95,7 +167,7 @@ for (int e = 0; e < entityCount; e++) {
      if (s == ENT_CLUE_2 && !objectives[OBJ_CLUE_2]) {
     objectives[OBJ_CLUE_2] = true;
     applyScoreDelta(score, SCORE_CLUE_FOUND);
-    cout << "You found clue digit 42"<<endl;
+    cout << "You found clue digit 2"<<endl;
     newfound = true;
      }
      if (s == ENT_CLUE_7 && !objectives[OBJ_CLUE_7]) {
@@ -146,7 +218,7 @@ if (itemSymbol == ENT_EMERGENCY_TOOLKIT) {
 }
 if (itemSymbol == ENT_OBSERVATION_TOKEN) {
     applyResourceDelta(energy, time,0, BONUS_OBSERVATION_TOKEN);
-    cout << "You used an Observation Token: +15 energy."<<endl;
+    cout << "You used an Observation Token: +15 times."<<endl;
 }
 if (itemSymbol != ENT_ENERGY_PACK && itemSymbol != ENT_EMERGENCY_TOOLKIT && itemSymbol != ENT_OBSERVATION_TOKEN) {
     addItem(inventory, inventoryCount, itemSymbol);
@@ -178,6 +250,17 @@ if (itemSymbol == ENT_EMERGENCY_CARD) {
 return true;
 
  }
+bool checkEndConditions(int energy, int time, const bool objectives[NUM_OBJECTIVES]){
+  if (energy <= 0 || time <= 0) {
+    return true;
+}
+if (objectives[OBJ_MISSION_WON]) {
+    return true;
+}
+return false;
+
+
+}
 
 
 
