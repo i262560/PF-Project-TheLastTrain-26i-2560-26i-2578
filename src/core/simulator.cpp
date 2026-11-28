@@ -58,16 +58,21 @@ if (command == 'Q' || command == 'q') {
     char symbol;
     cout << "Item symbol to collect: ";
     cin >> symbol;
-    handleCollectCommand(symbol, playerFloor, playerRoom, energy, time, score, roomEntities,
-                         entityCounts[playerFloor - 1][playerRoom - 1],
-                         inventory, inventoryCount, objectives);
+     bool picked = handleCollectCommand(symbol, playerFloor, playerRoom, energy, time, score,
+                                       roomEntities,entityCounts[playerFloor - 1][playerRoom - 1],
+                                       inventory, inventoryCount, objectives);
+    if (picked && symbol == ENT_EMERGENCY_CARD) {
+        emergencyTripsLeft = 3;
+    }
 }
+
 
 else {
     cout << "Unknown command.\n";
 }
-}
                    }
+}
+
   
  bool handleInspectCommand(int currentFloor, int currentRoom,
                           int& energy, int& time,
@@ -111,6 +116,7 @@ bool handleCollectCommand(char itemSymbol, int currentFloor, int currentRoom,
                           int& entityCount,
                           char inventory[MAX_INVENTORY_CAPACITY], int& inventoryCount,
                           bool objectives[NUM_OBJECTIVES]){
+                         
 int f = currentFloor - 1;
 int r = currentRoom - 1;
 int pos = -1;
@@ -124,8 +130,53 @@ if (pos == -1) {
     cout << "That item is not here."<<endl;
     return false;
 }
-cout << "Found it!"<<endl;
+for (int e = pos; e < entityCount - 1; e++) {
+    roomEntities[f][r][e] = roomEntities[f][r][e + 1];
+}
+roomEntities[f][r][entityCount - 1] = ENT_NONE;
+entityCount--;
+applyResourceDelta(energy, time, COST_ITEM_PICKUP_ENERGY, COST_ITEM_PICKUP_TIME);
+if (itemSymbol == ENT_ENERGY_PACK) {
+    applyResourceDelta(energy, time, BONUS_ENERGY_PACK, 0);
+    cout << "You used an Energy Pack: +25 energy." << endl;
+}
+if (itemSymbol == ENT_EMERGENCY_TOOLKIT) {
+    applyResourceDelta(energy, time, BONUS_EMERGENCY_TOOLKIT, 0);
+    cout << "You used an Emergency Toolkit: +15 energy."<<endl;
+}
+if (itemSymbol == ENT_OBSERVATION_TOKEN) {
+    applyResourceDelta(energy, time,0, BONUS_OBSERVATION_TOKEN);
+    cout << "You used an Observation Token: +15 energy."<<endl;
+}
+if (itemSymbol != ENT_ENERGY_PACK && itemSymbol != ENT_EMERGENCY_TOOLKIT && itemSymbol != ENT_OBSERVATION_TOKEN) {
+    addItem(inventory, inventoryCount, itemSymbol);
+}
+if (itemSymbol == ENT_MASTER_KEY) {
+    objectives[OBJ_MASTER_KEY] = true;
+    applyScoreDelta(score, SCORE_KEY_COLLECT);
+    cout << "You picked up the Master Key." << endl;
+}
+if (itemSymbol == ENT_LIFT_PASS) {
+    objectives[OBJ_LIFT_PASS] = true;
+    applyScoreDelta(score, SCORE_LIFT_PASS);
+    cout << "Lift Pass" << endl;
+}
+if (itemSymbol == ENT_FUSE) {
+    objectives[OBJ_FUSE_COLLECTED] = true;
+    cout << "You picked up the fuse." << endl;
+}
+if (itemSymbol == ENT_CAT_CARRIER) {
+    objectives[OBJ_CAT_CARRIER] = true;
+    cout << "You picked up the Cat Carrier." << endl;
+}
+if (itemSymbol == ENT_MEDICAL_KIT) {
+    cout << "You picked up the Medical Kit." << endl;
+}
+if (itemSymbol == ENT_EMERGENCY_CARD) {
+    cout << "You picked up the Emergency Access Card." << endl;
+}
 return true;
+
  }
 
 
